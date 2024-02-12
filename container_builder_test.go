@@ -64,4 +64,44 @@ func TestContainerBuilder(t *testing.T) {
 		builder := di.NewContainerBuilder(deps, &timeoutMilliseconds, nil)
 		builder.Build()
 	})
+
+	t.Run("should create even in mixed order", func(t *testing.T) {
+		d := []di.Dependency{
+			di.NewTypedDependency[testdata.TestFour](testdata.NewTestFour),
+			di.NewTypedDependency[testdata.TestThree](testdata.NewTestThree),
+			di.NewNamedDependency("testdata.TestTwo", testdata.NewTestTwo),
+			di.NewTypedDependency[testdata.TestOne](testdata.NewTestOne),
+		}
+
+		builder := di.NewContainerBuilder(d, nil, nil)
+		container := builder.Build()
+
+		t3, _ := di.Get[testdata.TestThree](*container)
+
+		if t3.One.Name != "testone" {
+			t.Fatalf("expected %s. received %s", "testone", t3.One.Name)
+		}
+	})
+
+	t.Run("should never create container", func(t *testing.T) {
+		defer func() {
+			p := recover()
+
+			if p == nil {
+				t.Fatal("should panic")
+			}
+
+			if p != "Cannot build container. Last dependency cannot be build, err dependency testdata.TestThree not exists" {
+				t.Fatalf("expected %s. received %s", "Cannot build container. Last dependency cannot be build, err dependency testdata.TestThree not exists", p)
+			}
+		}()
+
+		d := []di.Dependency{
+			di.NewTypedDependency[testdata.TestFour](testdata.NewTestFour),
+			di.NewTypedDependency[testdata.TestOne](testdata.NewTestOne),
+		}
+
+		builder := di.NewContainerBuilder(d, nil, nil)
+		builder.Build()
+	})
 }

@@ -24,3 +24,11 @@ type TestThree struct {
 func NewTestThree(t1 TestOne, t2 TestTwo) TestThree {
 	return TestThree{t1, t2}
 }
+
+type TestFour struct {
+	Three TestThree
+}
+
+func NewTestFour(t3 TestThree) TestFour {
+	return TestFour{t3}
+}

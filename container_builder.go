@@ -2,6 +2,7 @@ package di
 
 import (
 	"context"
+	"fmt"
 	"time"
 )
 
@@ -90,7 +91,26 @@ func (db containerBuilder) resolveDependencies(
 ) {
 	container := new(Container)
 	numberOfRecursions := 0
-	for _, dep := range dependencies {
+	deps := dependencies
+	index := 0
+	maxIndex := len(dependencies)
+	// for _, dep := range dependencies {
+	for len(deps) != 0 {
+		if maxIndex == 1 {
+			err := container.Add(deps[0])
+			if err != nil {
+				containerChannel <- nil
+				errorChannel <- fail(fmt.Sprintf("Cannot build container. Last dependency cannot be build, err %s", err))
+				return
+			}
+			break
+		}
+
+		// reset index
+		if index > maxIndex-1 {
+			index = 0
+		}
+
 		select {
 		case <-ctx.Done():
 			containerChannel <- nil
@@ -103,8 +123,16 @@ func (db containerBuilder) resolveDependencies(
 				return
 			}
 
-			container.Add(dep)
+			err := container.Add(deps[index])
 			numberOfRecursions++
+
+			// remove existing index, when succeejded
+			if err == nil {
+				deps = append(deps[:index], deps[index+1:]...)
+				maxIndex--
+			}
+
+			index++
 		}
 	}
 
