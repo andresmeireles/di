@@ -13,11 +13,10 @@ func TestGet(t *testing.T) {
 		di.NewTypedDependency[testdata.TestTwo](testdata.NewTestTwo),
 		di.NewTypedDependency[testdata.TestThree](testdata.NewTestThree),
 	}
+	builder := di.NewContainerBuilder(deps, nil, nil)
+	container := builder.Build()
 
 	t.Run("should get testone by his type", func(t *testing.T) {
-		builder := di.NewContainerBuilder(deps, nil, nil)
-		container := builder.Build()
-
 		testOne, err := di.Get[testdata.TestOne](*container)
 
 		if err != nil {
@@ -30,9 +29,6 @@ func TestGet(t *testing.T) {
 	})
 
 	t.Run("should get complex struct by his type", func(t *testing.T) {
-		builder := di.NewContainerBuilder(deps, nil, nil)
-		container := builder.Build()
-
 		t3, err := di.Get[testdata.TestThree](*container)
 
 		if err != nil {
