@@ -3,7 +3,7 @@ package di_test
 import (
 	"testing"
 
-	"github.com/andresmeireles/di/pkg/di"
+	"github.com/andresmeireles/di"
 )
 
 func TestNamedDependency(t *testing.T) {
