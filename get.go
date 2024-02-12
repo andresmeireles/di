@@ -5,6 +5,10 @@ import (
 	"reflect"
 )
 
+// Get dependency by generic definition, with generic with any type
+//
+// Parameter:
+//   - container (di.Container) container
 func Get[T any](container Container) (T, error) {
 	name := reflect.TypeOf((*T)(nil)).Elem().String()
 	dep, err := container.Get(name)

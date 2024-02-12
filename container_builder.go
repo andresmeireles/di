@@ -24,6 +24,8 @@ type containerBuilder struct {
 	recursion    *int
 }
 
+// Create new container builder struct
+//
 // Parameters:
 //   - dependency ([]Dependency) slice of dependencies
 //   - timeout (*float64) time in milliseconds to define a deadline to container build, if is nil, it will be 2 minutes
@@ -50,6 +52,7 @@ func NewContainerBuilder(
 	}
 }
 
+// Build container and return pointer to di.Container
 func (db containerBuilder) Build() *Container {
 	deps := db.dependencies
 	recursion := *db.recursion
@@ -70,6 +73,14 @@ func (db containerBuilder) Build() *Container {
 	return <-containerChannel
 }
 
+// Resolve multiple dependencies
+//
+// Parameters:
+//   - ctx (context.Context) context
+//   - maxRecursion (int) number of total recursions when resolve dependencies
+//   - dependencies ([]di.Dependency) slice of dependencies to be resolved
+//   - errorChannel (chan buildResult) channel with result struct
+//   - containerChannel (chan *di.Container) channel with pointer to di.Container
 func (db containerBuilder) resolveDependencies(
 	ctx context.Context,
 	maxRecursion int,

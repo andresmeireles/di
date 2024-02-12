@@ -6,10 +6,16 @@ import (
 	"strings"
 )
 
+// Container
 type Container struct {
 	container map[string]any
 }
 
+// Set function on container.
+//
+// Parameters:
+//   - name (string) name of dependency
+//   - implementation (any) initialized struct or value to add on container
 func (c *Container) set(name string, implementation any) {
 	if c.container == nil {
 		c.container = map[string]any{}
@@ -17,6 +23,10 @@ func (c *Container) set(name string, implementation any) {
 	c.container[name] = implementation
 }
 
+// Get dependency by name
+//
+// Parameter:
+//   - name (string) name of dependency
 func (c Container) Get(name string) (any, error) {
 	value, ok := c.container[name]
 	if !ok {
@@ -26,6 +36,10 @@ func (c Container) Get(name string) (any, error) {
 	return value, nil
 }
 
+// Add dependency
+//
+// Parameter:
+//   - dependency (di.Dependency) Dependency interface
 func (c *Container) Add(dependency Dependency) error {
 	implementation := dependency.Builder()
 	name := dependency.Name()
@@ -57,10 +71,19 @@ func (c *Container) Add(dependency Dependency) error {
 	return nil
 }
 
+// Check if implementation has params and return the number of parameters
+//
+// Parameter:
+//   - implementation (any) implementation function
 func (c Container) funcHasParams(implementation any) int {
 	return reflect.TypeOf(implementation).NumIn()
 }
 
+// Resolve the implementation function
+//
+// Parameters:
+//   - implementation (any) implementation function
+//   - numberOfParams (int) number of parameters in implementation function
 func (c *Container) resolve(implementation any, numberOfParams int) (any, error) {
 	reference := reflect.TypeOf(implementation)
 	paramValues := make([]reflect.Value, numberOfParams)
