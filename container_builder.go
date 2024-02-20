@@ -23,6 +23,7 @@ type containerBuilder struct {
 	dependencies []Dependency
 	timeout      *float64
 	recursion    *int
+	debug        bool
 }
 
 // Create new container builder struct
@@ -35,6 +36,7 @@ func NewContainerBuilder(
 	dependency []Dependency,
 	timeout *float64,
 	recursion *int,
+	debug bool,
 ) containerBuilder {
 	rec := 1000
 	if recursion != nil {
@@ -50,6 +52,7 @@ func NewContainerBuilder(
 		dependencies: dependency,
 		timeout:      &deadline,
 		recursion:    &rec,
+		debug:	      debug,
 	}
 }
 
@@ -124,6 +127,11 @@ func (db containerBuilder) resolveDependencies(
 			}
 
 			err := container.Add(deps[index])
+
+			if db.debug {
+				fmt.Println(err)
+			}
+
 			numberOfRecursions++
 
 			// remove existing index, when succeejded

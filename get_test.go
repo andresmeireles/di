@@ -13,7 +13,7 @@ func TestGet(t *testing.T) {
 		di.NewTypedDependency[testdata.TestTwo](testdata.NewTestTwo),
 		di.NewTypedDependency[testdata.TestThree](testdata.NewTestThree),
 	}
-	builder := di.NewContainerBuilder(deps, nil, nil)
+	builder := di.NewContainerBuilder(deps, nil, nil, false)
 	container := builder.Build()
 
 	t.Run("should get testone by his type", func(t *testing.T) {

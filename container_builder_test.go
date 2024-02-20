@@ -15,7 +15,7 @@ func TestContainerBuilder(t *testing.T) {
 	}
 
 	t.Run("create container", func(t *testing.T) {
-		builder := di.NewContainerBuilder(deps, nil, nil)
+		builder := di.NewContainerBuilder(deps, nil, nil, false)
 		container := builder.Build()
 
 		d1, err := container.Get("testdata.TestOne")
@@ -43,7 +43,7 @@ func TestContainerBuilder(t *testing.T) {
 		}()
 
 		recursion := 1
-		builder := di.NewContainerBuilder(deps, nil, &recursion)
+		builder := di.NewContainerBuilder(deps, nil, &recursion, false)
 		builder.Build()
 	})
 
@@ -61,7 +61,7 @@ func TestContainerBuilder(t *testing.T) {
 		}()
 
 		timeoutMilliseconds := 0.00001
-		builder := di.NewContainerBuilder(deps, &timeoutMilliseconds, nil)
+		builder := di.NewContainerBuilder(deps, &timeoutMilliseconds, nil, false)
 		builder.Build()
 	})
 
@@ -73,7 +73,7 @@ func TestContainerBuilder(t *testing.T) {
 			di.NewTypedDependency[testdata.TestOne](testdata.NewTestOne),
 		}
 
-		builder := di.NewContainerBuilder(d, nil, nil)
+		builder := di.NewContainerBuilder(d, nil, nil, false)
 		container := builder.Build()
 
 		t3, _ := di.Get[testdata.TestThree](*container)
@@ -101,7 +101,7 @@ func TestContainerBuilder(t *testing.T) {
 			di.NewTypedDependency[testdata.TestOne](testdata.NewTestOne),
 		}
 
-		builder := di.NewContainerBuilder(d, nil, nil)
+		builder := di.NewContainerBuilder(d, nil, nil, false)
 		builder.Build()
 	})
 }

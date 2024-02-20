@@ -41,7 +41,7 @@ func main() {
 		di.NewTypedDependency[Person](NewPerson),
 	}
 
-	builder := di.NewContainerBuilder(deps, nil, nil)
+	builder := di.NewContainerBuilder(deps, nil, nil, true)
 	container := builder.Build()
 
 	complexStruct, _ := di.Get[ComplexStruct](*container)
